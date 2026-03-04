@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Build the application
+  build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: copilot-manager:latest
+    tags:
+      - copilot-manager:build
+    profiles:
+      - build
+
+  # Development environment
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: copilot-manager:dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - cargo-cache:/root/.cargo
+    ports:
+      - "1420:1420"
+      - "8045:8045"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
+
+volumes:
+  cargo-cache:

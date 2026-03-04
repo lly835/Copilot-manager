@@ -1,0 +1,31 @@
+# Development Dockerfile
+FROM node:20-alpine
+
+# Install Rust and build tools
+RUN apk add --no-cache \
+    rust \
+    cargo \
+    libwebkit2gtk4-dev \
+    libappindicator3-dev \
+    librsvg2-dev \
+    dbus-dev \
+    openssl-dev \
+    pkgconfig \
+    build-base
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node dependencies
+RUN npm ci
+
+# Copy source
+COPY . .
+
+# Expose dev server port
+EXPOSE 1420 8045
+
+# Start development mode
+CMD ["npm", "run", "tauri", "dev"]

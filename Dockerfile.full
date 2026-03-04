@@ -1,0 +1,11 @@
+# 完整版 Dockerfile - 基于官方镜像
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+COPY . .
+RUN npm run build
+
+# 基于官方镜像
+FROM lbjlaq/antigravity-manager:latest
+COPY --from=frontend /app/dist /app/dist
