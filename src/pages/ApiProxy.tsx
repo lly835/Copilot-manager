@@ -465,19 +465,18 @@ export default function ApiProxy() {
 
     // ⚠️ Copilot 配置更新函数
     const updateCopilotConfig = (updates: Partial<NonNullable<ProxyConfig['copilot']>>) => {
+        const proxyConfig = (appConfig?.proxy || {}) as any;
+        const copilotConfig = proxyConfig.copilot || {
+            enabled: false,
+            github_token: '',
+            dispatch_mode: 'off',
+            default_model: 'claude-opus-4.5'
+        };
         const newConfig = {
-            ...appConfig,
+            ...(appConfig as any),
             proxy: {
-                ...appConfig.proxy,
-                copilot: {
-                    ...(appConfig.proxy.copilot || {
-                        enabled: false,
-                        github_token: '',
-                        dispatch_mode: 'off',
-                        default_model: 'claude-opus-4.5'
-                    }),
-                    ...updates
-                }
+                ...proxyConfig,
+                copilot: { ...copilotConfig, ...updates }
             }
         };
         saveConfig(newConfig);
